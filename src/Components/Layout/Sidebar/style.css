@@ -1,0 +1,88 @@
+.sidebar {
+    width: 260px;
+    height: calc(100vh - 6rem);
+    position: fixed;
+    transition: all 0.35s ease-in-out, left 0.35s ease-in-out, margin-right 0.35s ease-in-out, right 0.35s ease-in-out;
+    background: #333333;
+    z-index: 2;
+    top: 6rem;
+    padding-bottom: 6rem;
+    scrollbar-width: thin;
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow-y: auto;
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none;
+}
+
+.sideLink {
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    color: #fff;
+    display: block;
+    padding: 0.8rem 1rem;
+    background: #fff0;
+    position: relative;
+    transition: 0.3s linear;
+}
+
+
+.sidebar-li {
+    margin: 20px 0;
+}
+
+.sideLink:hover, .sideLink.active {
+    color: #333333;
+    background: var(--primaryColor);
+}
+
+.sideIcon {
+    font-size: 16px;
+    margin-right: 0.5rem;
+}
+
+
+/*----- Sidebar Collapsed Start -----*/
+
+.sidebar.collapsed {
+    width: 60px;
+    text-align: center;
+}
+
+.sidebar.collapsed .sideLinkText {
+    display: none;
+}
+
+.sidebar.collapsed .sideLink:hover .sideLinkText {
+    display: block;
+    left: 60px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primaryColor);
+    color: #fff;
+    z-index: 999;
+    position: absolute;
+    padding: 0.8rem 1rem;
+    white-space: nowrap;
+}
+
+.sidebar.collapsed .sideIcon {
+    margin: 0;
+}
+
+/*----- Sidebar Collapsed End -----*/
+
+
+@media screen and (max-width: 767px) {
+
+    .sidebar.collapsed {
+        width: 0;
+    }
+
+    .sidebar.collapsed .sideLink {
+        display: none;
+    }
+}

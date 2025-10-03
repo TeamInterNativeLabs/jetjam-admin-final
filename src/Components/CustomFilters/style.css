@@ -1,0 +1,56 @@
+
+.tableFilters {
+    margin: 1rem 0;
+    font-size: 15px;
+}
+
+.filterWrapper {
+    margin-bottom: 0.5rem;
+    position: relative;
+}
+
+.filterLabel {
+    color: #333;
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+}
+
+.clearLabel {
+    color: var(--primaryColor);
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.filterInput {
+    display: block;
+    background: #F1EEEE;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #141414;
+    resize: none;
+    outline: none;
+    margin-bottom: 0.2rem;
+}
+
+.searchWrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.searchButton {
+    font-size: 14px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    color: #666;
+    width: 30px;
+    height: 100%;
+}
+
+.searchInput {
+    padding-right: 30px;
+}

@@ -1,0 +1,31 @@
+.spinner-wrapper {
+    display: flex;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+}
+
+.spinner-main {
+    color: var(--primaryColor);
+}
+
+.shimmer {
+    width: 100%;
+    height: 100% !important;
+    background-color: #e1e1e1;
+    animation: shimmer-loading 1s infinite ease-in-out;
+}
+
+@keyframes shimmer-loading {
+    0% {
+        background-color: #e1e1e1;
+    }
+
+    50% {
+        background-color: #f1f1f1;
+    }
+
+    100% {
+        background-color: #e1e1e1;
+    }
+}

@@ -1,0 +1,20 @@
+.profileImage {
+    display: inline-block;
+    position: relative;
+}
+
+.imageUploadButton {
+    font-size: 14px;
+    background: var(--primaryColor);
+    color: #fff;
+    border-radius: 99px;
+    width: 30px;
+    aspect-ratio: 1/1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    bottom: -5px;
+    right: -5px;
+    cursor: pointer;
+}

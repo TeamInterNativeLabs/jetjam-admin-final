@@ -1,0 +1,205 @@
+@import url('./../fonts/stylesheet.css');
+
+/*----- General Css Start -----*/
+
+:root {
+    --primaryColor: #F6D027;
+    --grayColor: #666666;
+    --redColor: #ff0000;
+    --greenColor: #42C900;
+    --yellowColor: #E5BB45;
+}
+
+body {
+    font-family: 'Qanelas' !important;
+    font-weight: 500;
+}
+
+.primaryColor {
+    color: var(--primaryColor) !important;
+}
+
+.grayColor {
+    color: var(--grayColor) !important;
+}
+
+.greenColor {
+    color: var(--greenColor) !important;
+}
+
+.redColor {
+    color: var(--redColor) !important;
+}
+
+.yellowColor {
+    color: var(--yellowColor) !important;
+}
+
+.notButton {
+    border: none;
+    background: none;
+    outline: none !important;
+    box-shadow: none !important;
+}
+
+.classicToggle::after {
+    display: none;
+}
+
+.Toastify__toast {
+    font-family: 'Qanelas';
+}
+
+/*----- General Css End -----*/
+
+
+
+
+/*----- Modal Css Start -----*/
+
+.closeButton {
+    font-size: 16px;
+    color: #fff;
+    background: var(--primaryColor);
+    width: 30px;
+    height: 30px;
+    border-radius: 99px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    outline: none;
+    margin: 0.5rem;
+    margin-left: auto;
+}
+
+.modalImage {
+    width: 90px;
+    margin-bottom: 1rem;
+}
+
+.modalContent {
+    margin: 1rem 0;
+}
+
+.modalHeading {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 1rem;
+}
+
+/*----- Modal Css End -----*/
+
+/* ------- Card Css -------- */
+
+.variant-card {
+    min-height: 200px;
+    background-color: #FFF;
+    padding: 2rem;
+    border-radius: 1.5rem;
+
+    box-shadow: 1px 1px 10px 0px rgba(115, 103, 103, 0.75);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(115, 103, 103, 0.75);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(115, 103, 103, 0.75);
+}
+
+.product-card {
+    height: 300px;
+    background-color: #FFF;
+    padding: 1rem;
+    border-radius: 1rem;
+
+    box-shadow: 1px 1px 10px 0px rgba(115, 103, 103, 0.75);
+    -webkit-box-shadow: 1px 1px 10px 0px rgba(115, 103, 103, 0.75);
+    -moz-box-shadow: 1px 1px 10px 0px rgba(115, 103, 103, 0.75);
+}
+
+.product-upper {
+    display: flex;
+    flex-direction: row;
+    height: 30%;
+    align-items: center;
+
+}
+
+.product-lower {
+    height: 70%;
+}
+
+.product-card-image {
+    padding: 0.5rem;
+    width: 30%;
+    height: 50%;
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.product-card-content {
+    height: 50%;
+}
+
+.product-label {
+    color: var(--primaryColor);
+    margin-bottom: 0.2rem;
+    white-space: nowrap;
+}
+
+/* ------- Card Css End -------- */
+
+.dashCard {
+    background: #fff;
+    border-radius: 0.5rem;
+    padding: 1rem 2rem;
+}
+
+.mainTitle {
+    font-size: 22px;
+    font-weight: 600;
+}
+
+.profileImage img {
+    width: 90px;
+    aspect-ratio: 1/1;
+    object-fit: cover;
+    object-position: center;
+    border-radius: 99px;
+    outline: 2px solid #bcbcbc;
+    outline-offset: 4px;
+}
+
+.statusBadge {
+    font-size: 15px;
+    color: #fff;
+    padding: 0.4rem 0.8rem;
+    border-top-left-radius: 99px;
+    border-bottom-left-radius: 99px;
+    position: relative;
+    left: 2rem;
+
+}
+
+.statusBadgeActive {
+    background: var(--greenColor);
+}
+
+.statusBadgeInactive {
+    background: var(--redColor);
+}
+
+.secondaryLabel {
+    font-size: 15px;
+    font-weight: 700;
+    color: #A2A2A2;
+    margin-bottom: 0.2rem;
+}
+
+.secondaryText {
+    font-size: 15px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.2rem;
+}

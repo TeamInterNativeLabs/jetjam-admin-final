@@ -1,0 +1,24 @@
+.errorContent {
+    background: var(--primaryColor);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    color: #fff;
+    padding: 0 2rem;
+    height: 100vh;
+    text-transform: capitalize;
+}
+
+.errorContent img {
+    max-width: 100%;
+    margin-bottom: 1rem;
+}
+
+.errorContent h2 {
+    font-size: 38px;
+}
+
+.errorContent h3 {
+    font-size: 26px;
+}

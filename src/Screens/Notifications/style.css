@@ -1,0 +1,11 @@
+.notificationSelect {
+    display: block;
+    background: #F1EEEE;
+    border: none;
+    padding: 8px 12px;
+    font-size: 14px;
+    color: #141414;
+    resize: none;
+    outline: none;
+    margin-bottom: 0.2rem;
+}
