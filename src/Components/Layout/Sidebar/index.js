@@ -34,18 +34,18 @@ const LINKS = [
   },
   {
     to: "/paid-albums",
-    title: "Paid Albums",
+    title: "Packages",
     icon: faBook,
   },
   {
-    to: "/subscriptions",
+    to: "/packages",
     title: "Subscriptions",
-    icon: faUser,
+    icon: faBox,
   },
   {
-    to: "/packages",
-    title: "Packages",
-    icon: faBox,
+    to: "/subscriptions",
+    title: "Paid Subscriptions",
+    icon: faUser,
   },
   {
     to: "/snp-videos",

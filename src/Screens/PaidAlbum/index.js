@@ -187,7 +187,7 @@ const PaidAlbum = () => {
               <div className="dashCard">
                 <div className="row mb-3 justify-content-between">
                   <div className="col-md-6 mb-2">
-                    <h2 className="mainTitle">Paid Albums</h2>
+                    <h2 className="mainTitle">Packages</h2>
                   </div>
                   <div className="col-md-6 mb-2">
                     <div className="addUser">

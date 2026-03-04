@@ -19,6 +19,7 @@ import Error from "../../Screens/Error";
 import Genre from "../../Screens/Genre";
 import AddGenre from "../../Screens/Genre/AddGenre";
 import Packages from "../../Screens/Packages";
+import AddPackage from "../../Screens/Packages/AddPackage";
 import PackageDetails from "../../Screens/Packages/PackageDetails";
 import SnpVideos from "../../Screens/SnpVideos";
 import DetailVideo from "../../Screens/SnpVideos/DetailVideo";
@@ -68,6 +69,11 @@ let AppRoutes = [
   {
     path: "/packages",
     element: <Packages />,
+    isProtected: true,
+  },
+  {
+    path: "/packages/add",
+    element: <AddPackage />,
     isProtected: true,
   },
   {

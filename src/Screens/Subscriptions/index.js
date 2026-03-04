@@ -94,7 +94,7 @@ const Subscriptions = () => {
   }
 
   useEffect(() => {
-    document.title = 'JetJams | Subscriptions';
+    document.title = 'JetJams | Paid Subscriptions';
   }, []);
 
   const maleHeaders = [
@@ -137,7 +137,7 @@ const Subscriptions = () => {
               <div className="dashCard">
                 <div className="row mb-3 justify-content-between">
                   <div className="col-md-6 mb-2">
-                    <h2 className="mainTitle">Subscriptions</h2>
+                    <h2 className="mainTitle">Paid Subscriptions</h2>
                   </div>
                   <div className="col-md-6 mb-2">
                     <div className="addUser">

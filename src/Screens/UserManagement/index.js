@@ -104,30 +104,15 @@ export const UserManagement = () => {
   }, []);
 
   const maleHeaders = [
-    {
-      key: "id",
-      title: "S.No",
-    },
-    {
-      key: "name",
-      title: "Name",
-    },
-    {
-      key: "email",
-      title: "Email Address",
-    },
-    {
-      key: "registered",
-      title: "Registered On",
-    },
-    {
-      key: "status",
-      title: "Status",
-    },
-    {
-      key: "actions",
-      title: "Actions",
-    },
+    { key: "id", title: "S.No" },
+    { key: "name", title: "Name" },
+    { key: "email", title: "Email Address" },
+    { key: "subscription_plan", title: "Plan" },
+    { key: "subscription_status", title: "Subscription Status" },
+    { key: "subscription_dates", title: "Start / End" },
+    { key: "registered", title: "Registered On" },
+    { key: "status", title: "Status" },
+    { key: "actions", title: "Actions" },
   ];
 
   return (
@@ -184,6 +169,15 @@ export const UserManagement = () => {
                                   {item.first_name} {item.last_name}
                                 </td>
                                 <td>{item.email}</td>
+                                <td>{item.subscription?.plan ?? "—"}</td>
+                                <td className={item.subscription?.active ? 'greenColor' : (item.subscription?.canceledAt ? 'text-warning' : 'redColor')}>
+                                  {item.subscription ? (item.subscription.active ? "Active" : item.subscription.canceledAt ? "Canceled" : "Inactive") : "—"}
+                                </td>
+                                <td>
+                                  {item.subscription
+                                    ? `${dateFormatter(item.subscription.createdAt)} / ${dateFormatter(item.subscription.expiry)}`
+                                    : "—"}
+                                </td>
                                 <td>{dateFormatter(item.createdAt)}</td>
                                 <td className={item.active ? 'greenColor' : "redColor"}>{item.active ? 'Active' : "Inactive"}</td>
                                 <td>

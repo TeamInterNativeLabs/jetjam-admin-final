@@ -17,19 +17,41 @@ export const packageApiService = createApi({
     endpoints: (builder) => ({
         getPackages: builder.query({
             query: (args) => {
-                let { id, currentPage, itemsPerPage, role, search, sortBy, to, from, business } = args
+                let { id, currentPage, itemsPerPage, role, search, sortBy, to, from, business, forPublic } = args || {}
 
                 if (id) {
                     return `get/${id}`
                 }
 
-                return `get?page=${currentPage}&rowsPerPage=${itemsPerPage}&role=${role}${(search && search !== '') ? `&search=${search}` : ``}${(sortBy && sortBy !== '') ? `&sortBy=${sortBy}` : ``}${(business && business !== '') ? `&business=${business}` : ``}${(from && from !== '') ? `&from=${from}` : ``}${(to && to !== '') ? `&to=${to}` : ``}`
+                let url = `get?page=${currentPage || 1}&rowsPerPage=${itemsPerPage || 10}&role=${role || ''}`
+                if (search && search !== '') url += `&search=${search}`
+                if (sortBy && sortBy !== '') url += `&sortBy=${sortBy}`
+                if (business && business !== '') url += `&business=${business}`
+                if (from && from !== '') url += `&from=${from}`
+                if (to && to !== '') url += `&to=${to}`
+                if (forPublic) url += `&forPublic=1`
+                return url
             },
             keepUnusedDataFor: 0
+        }),
+        createPackage: builder.mutation({
+            query: (body) => ({
+                url: 'create',
+                method: 'POST',
+                body
+            })
+        }),
+        deletePackage: builder.mutation({
+            query: (id) => ({
+                url: `delete/${id}`,
+                method: 'DELETE'
+            })
         })
     })
 })
 
 export const {
     useGetPackagesQuery,
+    useCreatePackageMutation,
+    useDeletePackageMutation,
 } = packageApiService

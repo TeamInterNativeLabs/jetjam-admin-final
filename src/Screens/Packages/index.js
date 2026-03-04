@@ -14,10 +14,10 @@ import CustomTable from "./../../Components/CustomTable";
 
 import "./style.css";
 
-import { placeholderImage } from "../../Assets/images";
-import { useGetUsersQuery, useUpdateUserMutation } from "../../Redux/Apis/User";
+import { useNavigate } from "react-router-dom";
+import { useGetPackagesQuery, useDeletePackageMutation } from "../../Redux/Apis/Package";
 import { dateFormatter } from "../../Utils";
-import { useGetPackagesQuery } from "../../Redux/Apis/Package";
+import CustomButton from "../../Components/CustomButton";
 
 const sortValues = [
   {
@@ -46,24 +46,19 @@ const perPageValues = [
 ];
 
 const Packages = () => {
-
-  const [changeUserStatus, { isLoading: isUpdating }] = useUpdateUserMutation();
-
-  const [showModal, setShowModal] = useState(false);
-  const [showModal2, setShowModal2] = useState(false);
-  const [showModal3, setShowModal3] = useState(false);
-  const [showModal4, setShowModal4] = useState(false);
+  const navigate = useNavigate();
+  const [deletePackage, { isLoading: isDeleting }] = useDeletePackageMutation();
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [packageToDelete, setPackageToDelete] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(perPageValues[0].value);
   const [inputValue, setInputValue] = useState('');
-  const [selectedUserId, setSelectedUserId] = useState();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
-
   const [sortBy, setSortBy] = useState(sortValues[0].value);
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
-  const { data, isLoading, isFetching, refetch } = useGetPackagesQuery({
+  const { data, isLoading, refetch } = useGetPackagesQuery({
     currentPage,
     itemsPerPage,
     search: inputValue,
@@ -72,34 +67,35 @@ const Packages = () => {
     to,
   });
 
+  const packagesList = data?.data ?? [];
+
   const toggleFilter = () => setIsFilterOpen(!isFilterOpen)
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
+  const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
+
+  const handleDeleteClick = (pkg) => {
+    setPackageToDelete(pkg);
+    setShowDeleteModal(true);
   };
 
-  const inactiveMale = async () => {
-    await changeUserStatus({ id: selectedUserId, payload: { active: false } })
-    refetch()
-    setSelectedUserId()
-    setShowModal(false)
-    setShowModal2(true)
-  }
-
-  const activeMale = async () => {
-    await changeUserStatus({ id: selectedUserId, payload: { active: true } })
-    refetch()
-    setSelectedUserId()
-    setShowModal3(false)
-    setShowModal4(true)
-  }
+  const confirmDelete = async () => {
+    if (!packageToDelete?._id) return;
+    try {
+      await deletePackage(packageToDelete._id).unwrap();
+      refetch();
+      setShowDeleteModal(false);
+      setPackageToDelete(null);
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   const handleChange = (e) => {
     setInputValue(e.target.value);
   }
 
   useEffect(() => {
-    document.title = 'JetJams | Packages';
+    document.title = 'JetJams | Subscriptions';
   }, []);
 
   const maleHeaders = [
@@ -138,14 +134,11 @@ const Packages = () => {
               <div className="dashCard">
                 <div className="row mb-3 justify-content-between">
                   <div className="col-md-6 mb-2">
-                    <h2 className="mainTitle">Packages</h2>
+                    <h2 className="mainTitle">Subscriptions</h2>
                   </div>
-                  <div className="col-md-6 mb-2">
-                    <div className="addUser">
-                      {/* <CustomButton type="button" text="Add User" className="primaryButton" /> */}
-                      {/* <CustomButton type="button" icon={faFilter} className="primaryButton rounded-50" onClick={toggleFilter} /> */}
-                      <CustomInput type="text" placeholder="Search Here..." value={inputValue} inputClass="mainInput" onChange={handleChange} />
-                    </div>
+                  <div className="col-md-6 mb-2 d-flex align-items-center gap-2 justify-content-md-end">
+                    <CustomButton type="button" text="Add Package" className="primaryButton" onClick={() => navigate('/packages/add')} />
+                    <CustomInput type="text" placeholder="Search Here..." value={inputValue} inputClass="mainInput" onChange={handleChange} />
                   </div>
                 </div>
                 <div className="row mb-3">
@@ -168,10 +161,10 @@ const Packages = () => {
                           setFilterTo={setTo}
                           itemsPerPage={itemsPerPage}
                           setItemsPerPage={setItemsPerPage}
-                          length={data?.data?.length}
+                          length={packagesList?.length}
                         >
                           <tbody>
-                            {data?.data?.map((item, index) => (
+                            {packagesList?.map((item, index) => (
                               <tr key={item._id}>
                                 <td>{(index + 1) + ((currentPage - 1) * itemsPerPage)}</td>
                                 <td className="text-capitalize">
@@ -192,10 +185,7 @@ const Packages = () => {
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu align="end" className="tableDropdownMenu">
                                       <Link to={`/packages/${item._id}`} className="tableAction"><FontAwesomeIcon icon={faEye} className="tableActionIcon" />View</Link>
-                                      {/* <button onClick={() => {
-                                        setSelectedUserId(item._id)
-                                        item.active ? setShowModal(true) : setShowModal3(true)
-                                      }} className="tableAction">{item.active ? <FontAwesomeIcon icon={faTimes} className="tableActionIcon" /> : <FontAwesomeIcon icon={faCheck} className="tableActionIcon" />}{item.active ? 'Inactive' : "Active"}</button> */}
+                                      <button type="button" onClick={() => handleDeleteClick(item)} className="tableAction text-danger"><FontAwesomeIcon icon={faTimes} className="tableActionIcon" />Delete</button>
                                     </Dropdown.Menu>
                                   </Dropdown>
                                 </td>
@@ -204,7 +194,7 @@ const Packages = () => {
                           </tbody>
                         </CustomTable>
                         <CustomPagination
-                          length={data?.data?.length}
+                          length={packagesList?.length}
                           itemsPerPage={itemsPerPage}
                           totalItems={data?.total}
                           currentPage={currentPage}
@@ -217,11 +207,7 @@ const Packages = () => {
             </div>
           </div>
 
-          <CustomModal loading={isUpdating} show={showModal} close={() => { setShowModal(false) }} action={inactiveMale} heading='Are you sure you want to mark this user as inactive?' />
-          <CustomModal show={showModal2} close={() => { setShowModal2(false) }} success heading='Marked as Inactive' />
-
-          <CustomModal loading={isUpdating} show={showModal3} close={() => { setShowModal3(false) }} action={activeMale} heading='Are you sure you want to mark this user as Active?' />
-          <CustomModal show={showModal4} close={() => { setShowModal4(false) }} success heading='Marked as Active' />
+          <CustomModal loading={isDeleting} show={showDeleteModal} close={() => { setShowDeleteModal(false); setPackageToDelete(null); }} action={confirmDelete} heading="Delete this package? This cannot be undone." />
         </div>
       </DashboardLayout>
     </>
