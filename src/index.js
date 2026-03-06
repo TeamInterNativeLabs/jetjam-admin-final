@@ -12,7 +12,7 @@ let persistor = persistStore(store)
 
 if ("serviceWorker" in navigator) {
     navigator.serviceWorker
-        .register("../watcher/firebase-messaging-sw.js", { scope: "/watcher/" })
+        .register("/firebase-messaging-sw.js", { scope: "/" })
         .then(function (registration) {
             console.log("Registration successful, scope is:", registration.scope);
         })
