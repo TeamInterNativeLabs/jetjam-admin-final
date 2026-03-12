@@ -29,7 +29,7 @@ const LINKS = [
   },
   {
     to: "/albums",
-    title: "Albums",
+    title: "Paid Albums",
     icon: faBook,
   },
   {

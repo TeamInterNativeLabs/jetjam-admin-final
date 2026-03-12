@@ -11,8 +11,9 @@ import { useUpdateUserMutation } from "../../Redux/Apis/User";
 import { placeholderImage } from "../../Assets/images";
 
 const AlbumDetails = () => {
+  const { id } = useParams();
   const [albumData, setData] = useState();
-  // const { data, isLoading, refetch } = useGetAllAlbumsQuery();
+  const { data, isLoading, refetch } = useGetAllAlbumsQuery();
 
   const [changeUserStatus, { isLoading: isUpdating }] = useUpdateUserMutation();
 
@@ -112,6 +113,33 @@ const AlbumDetails = () => {
                       <p className="secondaryText">{albumData?.description}</p>
                     </div>
                   </div>
+                  {albumData?._id && (
+                    <div className="row mb-3">
+                      <div className="col-lg-8">
+                        <h4 className="secondaryLabel">Shareable link (marketing)</h4>
+                        <div className="d-flex align-items-center gap-2 flex-wrap">
+                          <input
+                            readOnly
+                            type="text"
+                            className="form-control"
+                            value={`${process.env.REACT_APP_SITE_URL || 'https://jetjams.net'}/paid-album/${albumData._id}`}
+                            style={{ maxWidth: '400px' }}
+                          />
+                          <button
+                            type="button"
+                            className="btn btn-primary btn-sm"
+                            onClick={() => {
+                              const url = `${process.env.REACT_APP_SITE_URL || 'https://jetjams.net'}/paid-album/${albumData._id}`;
+                              navigator.clipboard.writeText(url);
+                            }}
+                          >
+                            Copy
+                          </button>
+                        </div>
+                        <p className="secondaryText small mt-1 mb-0">Share this URL so users can view and purchase this paid album.</p>
+                      </div>
+                    </div>
+                  )}
                   <div className="row">
                     <div className="col-lg-8">
                       <div className="row">
