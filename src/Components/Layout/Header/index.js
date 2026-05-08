@@ -17,6 +17,7 @@ import { logo, placeholderImage } from './../../../Assets/images/'
 import CustomModal from "../../CustomModal";
 import { notifications } from "../../../Config/Data";
 import { logout } from "../../../Redux/Slices/Auth";
+import { useLogoutApiMutation } from "../../../Redux/Apis/Auth";
 import { useGetNotificationsQuery } from "../../../Redux/Apis/Notification";
 import Loader from "../../Loader";
 
@@ -27,6 +28,7 @@ export const Header = (props) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useSelector(state => state.authSlice)
+  const [logoutApi] = useLogoutApiMutation()
   if (user) {
     var { picture } = user
   }
@@ -45,7 +47,12 @@ export const Header = (props) => {
     setShowModal(true)
   }
 
-  const handleRedirect = () => {
+  const handleRedirect = async () => {
+    try {
+      await logoutApi().unwrap()
+    } catch (_) {
+      // ignore — still clear local state
+    }
     navigate('/');
     dispatch(logout())
   }

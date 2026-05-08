@@ -4,7 +4,16 @@ const baseUrl = `${process.env.REACT_APP_BASE_URL}/auth/`
 
 export const authApiService = createApi({
     reducerPath: 'authApi',
-    baseQuery: fetchBaseQuery({ baseUrl }),
+    baseQuery: fetchBaseQuery({
+        baseUrl,
+        prepareHeaders: (headers, { getState }) => {
+            const token = getState().authSlice.token
+            if (token) {
+                headers.set('Authorization', `Bearer ${token}`)
+            }
+            return headers
+        }
+    }),
 
     endpoints: (builder) => ({
         login: builder.mutation({
@@ -34,7 +43,13 @@ export const authApiService = createApi({
                 method: 'POST',
                 body: payload
             })
-        })
+        }),
+        logoutApi: builder.mutation({
+            query: () => ({
+                url: 'logout',
+                method: 'POST',
+            })
+        }),
     })
 })
 
@@ -42,5 +57,6 @@ export const {
     useLoginMutation,
     useForgetPasswordMutation,
     useVerifyOtpMutation,
-    useResetPasswordMutation
+    useResetPasswordMutation,
+    useLogoutApiMutation,
 } = authApiService
