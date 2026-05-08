@@ -109,7 +109,7 @@ const EditProfile = () => {
                                             <div className="col-lg-6">
                                                 <div className="row">
                                                     <div className="col-12 mb-3">
-                                                        <CustomInput label="Name" labelClass="mainLabel" required type="text" placeholder="Enter Name" inputClass="mainInput" value={userData?.fullName} onChange={(event) => { setUserData({ ...userData, fullName: event.target.value }) }} />
+                                                        <CustomInput label="First Name" labelClass="mainLabel" required type="text" placeholder="Enter First Name" inputClass="mainInput" value={userData?.first_name} onChange={(event) => { setUserData({ ...userData, first_name: event.target.value }) }} />
                                                     </div>
                                                 </div>
                                                 <div className="row">

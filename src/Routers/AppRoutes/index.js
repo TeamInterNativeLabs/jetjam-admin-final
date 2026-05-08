@@ -6,9 +6,7 @@ import AlbumDetails from "../../Screens/Album/AlbumDetails";
 import EditAlbum from "../../Screens/Album/EditAlbum";
 
 import PaidAlbum from "../../Screens/PaidAlbum";
-// import AddAlbum from "../../Screens/Album/AddAlbum";
-// import AlbumDetails from "../../Screens/Album/AlbumDetails";
-// import EditAlbum from "../../Screens/Album/EditAlbum";
+import AddPaidAlbum from "../../Screens/PaidAlbum/AddAlbum";
 
 import ForgetPassword from "../../Screens/Auth/ForgetPassword";
 import ForgetPassword2 from "../../Screens/Auth/ForgetPassword2";
@@ -27,7 +25,20 @@ import AddVideo from "../../Screens/SnpVideos/AddVideo";
 import Subscriptions from "../../Screens/Subscriptions";
 import { UserManagement } from "../../Screens/UserManagement";
 import UserDetails from "../../Screens/UserManagement/UserDetails";
-import AddPaidAlbum from "../../Screens/PaidAlbum/AddAlbum";
+
+// Previously unreachable screens — now registered
+import { Feedbacks } from "../../Screens/Feedbacks";
+import FeedbackDetails from "../../Screens/Feedbacks/FeedbackDetails";
+import Notifications from "../../Screens/Notifications";
+import { Representatives } from "../../Screens/Representatives";
+import RepresentativeDetails from "../../Screens/Representatives/RepresentativeDetails";
+import { Customers } from "../../Screens/Customers";
+import CustomerDetails from "../../Screens/Customers/CustomerDetails";
+import { Orders } from "../../Screens/Orders";
+import OrderDetails from "../../Screens/Orders/OrderDetails";
+import Profile from "../../Screens/Profile";
+import EditProfile from "../../Screens/Profile/EditProfile";
+import ChangePassword from "../../Screens/Profile/ChangePassword";
 
 let AppRoutes = [
   {
@@ -56,6 +67,7 @@ let AppRoutes = [
     element: <Dashboard />,
     isProtected: true,
   },
+  // User Management
   {
     path: "/users",
     element: <UserManagement />,
@@ -66,6 +78,7 @@ let AppRoutes = [
     element: <UserDetails />,
     isProtected: true,
   },
+  // Subscription Plans (Packages)
   {
     path: "/packages",
     element: <Packages />,
@@ -81,6 +94,7 @@ let AppRoutes = [
     element: <PackageDetails />,
     isProtected: true,
   },
+  // Paid Albums
   {
     path: "/paid-albums",
     element: <PaidAlbum />,
@@ -91,6 +105,7 @@ let AppRoutes = [
     element: <AddPaidAlbum />,
     isProtected: true,
   },
+  // Free Albums
   {
     path: "/albums",
     element: <Album />,
@@ -111,11 +126,13 @@ let AppRoutes = [
     element: <EditAlbum />,
     isProtected: true,
   },
+  // Subscriptions (paid records)
   {
     path: "/subscriptions",
     element: <Subscriptions />,
     isProtected: true,
   },
+  // Genre
   {
     path: "/genre",
     element: <Genre />,
@@ -126,6 +143,7 @@ let AppRoutes = [
     element: <AddGenre />,
     isProtected: true,
   },
+  // SNP Videos
   {
     path: "/snp-videos",
     element: <SnpVideos />,
@@ -139,6 +157,77 @@ let AppRoutes = [
   {
     path: "/snp-videos/add",
     element: <AddVideo />,
+    isProtected: true,
+  },
+  // Feedbacks — FIX: was missing route for details
+  {
+    path: "/feedbacks",
+    element: <Feedbacks />,
+    isProtected: true,
+  },
+  {
+    path: "/feedbacks/feedback-details/:id",
+    element: <FeedbackDetails />,
+    isProtected: true,
+  },
+  // Notifications
+  {
+    path: "/notifications",
+    element: <Notifications />,
+    isProtected: true,
+  },
+  // Representatives — FIX: add-representative route was missing
+  {
+    path: "/representatives",
+    element: <Representatives />,
+    isProtected: true,
+  },
+  {
+    path: "/representatives/:id",
+    element: <RepresentativeDetails />,
+    isProtected: true,
+  },
+  {
+    path: "/add-representative",
+    element: <RepresentativeDetails />,
+    isProtected: true,
+  },
+  // Customers — FIX: view route was missing
+  {
+    path: "/customers",
+    element: <Customers />,
+    isProtected: true,
+  },
+  {
+    path: "/representative/customers/details/:id",
+    element: <CustomerDetails />,
+    isProtected: true,
+  },
+  // Orders
+  {
+    path: "/orders",
+    element: <Orders />,
+    isProtected: true,
+  },
+  {
+    path: "/orders/:id",
+    element: <OrderDetails />,
+    isProtected: true,
+  },
+  // Profile — FIX: routes were wrong
+  {
+    path: "/profile",
+    element: <Profile />,
+    isProtected: true,
+  },
+  {
+    path: "/profile/edit-profile",
+    element: <EditProfile />,
+    isProtected: true,
+  },
+  {
+    path: "/profile/change-password",
+    element: <ChangePassword />,
     isProtected: true,
   },
   {

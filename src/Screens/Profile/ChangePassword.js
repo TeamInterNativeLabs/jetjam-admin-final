@@ -14,8 +14,8 @@ import { useChangePasswordMutation } from "../../Redux/Apis/User";
 import { compareString, objectValidator } from "../../Utils";
 
 let initialState = {
-    currentPassword: null,
-    newPassword: null,
+    current_password: null,
+    new_password: null,
     confirmPassword: null
 }
 
@@ -30,9 +30,8 @@ const ChangePassword = () => {
     const [changePassword, { isLoading, isSuccess }] = useChangePasswordMutation()
 
     const handleClickPopup = async () => {
-        if (objectValidator(formData) && compareString(formData.newPassword, formData.confirmPassword)) {
-            let payload = { ...formData }
-            delete payload.confirmPassword
+        if (objectValidator(formData) && compareString(formData.new_password, formData.confirmPassword)) {
+            let payload = { current_password: formData.current_password, new_password: formData.new_password }
             await changePassword(payload)
         }
     }
@@ -65,15 +64,15 @@ const ChangePassword = () => {
                             <form>
                                 <div className="row mb-3">
                                     <div className="col-12">
-                                        <CustomInput label="Current Password" value={formData?.currentPassword} labelClass="mainLabel" required type="password" placeholder="Enter Current Password" inputClass="mainInput" onChange={(event) => {
-                                            setFormData({ ...formData, currentPassword: event.target.value })
+                                        <CustomInput label="Current Password" value={formData?.current_password} labelClass="mainLabel" required type="password" placeholder="Enter Current Password" inputClass="mainInput" onChange={(event) => {
+                                            setFormData({ ...formData, current_password: event.target.value })
                                         }} />
                                     </div>
                                 </div>
                                 <div className="row mb-3">
                                     <div className="col-12">
-                                        <CustomInput label="New Password" value={formData?.newPassword} labelClass="mainLabel" required type="password" placeholder="Enter New Password" inputClass="mainInput" onChange={(event) => {
-                                            setFormData({ ...formData, newPassword: event.target.value })
+                                        <CustomInput label="New Password" value={formData?.new_password} labelClass="mainLabel" required type="password" placeholder="Enter New Password" inputClass="mainInput" onChange={(event) => {
+                                            setFormData({ ...formData, new_password: event.target.value })
                                         }} />
                                     </div>
                                 </div>

@@ -25,32 +25,42 @@ const LINKS = [
   {
     to: "/genre",
     title: "Genre",
-    icon: faUser,
+    icon: faBook,
   },
   {
     to: "/albums",
-    title: "Paid Albums",
+    title: "Albums",
     icon: faBook,
   },
   {
     to: "/paid-albums",
-    title: "Packages",
+    title: "Paid Albums",
     icon: faBook,
   },
   {
     to: "/packages",
-    title: "Subscriptions",
+    title: "Subscription Plans",
     icon: faBox,
   },
   {
     to: "/subscriptions",
-    title: "Paid Subscriptions",
+    title: "Subscriptions",
     icon: faUser,
   },
   {
     to: "/snp-videos",
     title: "SNP Videos",
     icon: faBox,
+  },
+  {
+    to: "/feedbacks",
+    title: "Feedbacks",
+    icon: faBook,
+  },
+  {
+    to: "/notifications",
+    title: "Notifications",
+    icon: faBorderAll,
   },
 ];
 

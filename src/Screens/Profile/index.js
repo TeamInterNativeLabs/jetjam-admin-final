@@ -45,7 +45,7 @@ const Profile = () => {
                                         <div className="row mb-4">
                                             <div className="col-lg-12 mb-3">
                                                 <h4 className="secondaryLabel">Name</h4>
-                                                <p className="secondaryText">{user?.fullName}</p>
+                                                <p className="secondaryText">{user?.first_name} {user?.last_name}</p>
                                             </div>
                                             {/* <div className="col-lg-6 mb-3">
                                                 <h4 className="secondaryLabel">Country</h4>
