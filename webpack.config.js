@@ -1,7 +1,7 @@
 const path = require('path');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
-const Dotenv = require('dotenv-webpack');
+const webpack = require('webpack');
 
 module.exports = env => ({
     entry: path.join(__dirname, "src", "index.js"),
@@ -65,8 +65,18 @@ module.exports = env => ({
                 { from: './public/firebase-messaging-sw.js', to: 'firebase-messaging-sw.js' },
             ]
         }),
-        new Dotenv({
-            path: `./.env${env.file && env.file !== '' && env.file !== null ? `.${env.file}` : ''}`
+        // Use DefinePlugin so Vercel env vars are injected at build time
+        // Falls back to .env file values for local development
+        new webpack.DefinePlugin({
+            'process.env.REACT_APP_BASE_URL': JSON.stringify(
+                process.env.REACT_APP_BASE_URL || 'http://localhost:5000/jetjams/v1/api'
+            ),
+            'process.env.REACT_APP_IMAGE_ENDPOINT': JSON.stringify(
+                process.env.REACT_APP_IMAGE_ENDPOINT || 'http://localhost:5000/'
+            ),
+            'process.env.REACT_APP_SITE_URL': JSON.stringify(
+                process.env.REACT_APP_SITE_URL || 'http://localhost:5173'
+            ),
         }),
     ],
 })
