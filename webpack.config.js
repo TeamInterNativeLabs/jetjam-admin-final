@@ -69,13 +69,19 @@ module.exports = env => ({
         // Falls back to .env file values for local development
         new webpack.DefinePlugin({
             'process.env.REACT_APP_BASE_URL': JSON.stringify(
-                process.env.REACT_APP_BASE_URL || 'http://localhost:5000/jetjams/v1/api'
+                // If env var is set and is not HTTP on production, use it
+                // Otherwise fall back to /api proxy path for Vercel HTTPS deployments
+                process.env.REACT_APP_BASE_URL && !process.env.REACT_APP_BASE_URL.startsWith('http://')
+                    ? process.env.REACT_APP_BASE_URL
+                    : process.env.REACT_APP_BASE_URL || '/api'
             ),
             'process.env.REACT_APP_IMAGE_ENDPOINT': JSON.stringify(
-                process.env.REACT_APP_IMAGE_ENDPOINT || 'http://localhost:5000/'
+                process.env.REACT_APP_IMAGE_ENDPOINT && !process.env.REACT_APP_IMAGE_ENDPOINT.startsWith('http://')
+                    ? process.env.REACT_APP_IMAGE_ENDPOINT
+                    : process.env.REACT_APP_IMAGE_ENDPOINT || '/'
             ),
             'process.env.REACT_APP_SITE_URL': JSON.stringify(
-                process.env.REACT_APP_SITE_URL || 'http://localhost:5173'
+                process.env.REACT_APP_SITE_URL || 'https://www.jetjams.net'
             ),
         }),
     ],
