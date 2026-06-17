@@ -7,6 +7,8 @@ import EditAlbum from "../../Screens/Album/EditAlbum";
 
 import PaidAlbum from "../../Screens/PaidAlbum";
 import AddPaidAlbum from "../../Screens/PaidAlbum/AddAlbum";
+import PaidAlbumDetails from "../../Screens/PaidAlbum/AlbumDetails";
+import EditPaidAlbum from "../../Screens/PaidAlbum/EditAlbum";
 
 import ForgetPassword from "../../Screens/Auth/ForgetPassword";
 import ForgetPassword2 from "../../Screens/Auth/ForgetPassword2";
@@ -103,6 +105,16 @@ let AppRoutes = [
   {
     path: "/paid-albums/add",
     element: <AddPaidAlbum />,
+    isProtected: true,
+  },
+  {
+    path: "/paid-albums/:id",
+    element: <PaidAlbumDetails />,
+    isProtected: true,
+  },
+  {
+    path: "/paid-albums/edit/:id",
+    element: <EditPaidAlbum />,
     isProtected: true,
   },
   // Free Albums

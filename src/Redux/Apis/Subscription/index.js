@@ -23,7 +23,7 @@ export const subscriptionApiService = createApi({
                     return `get/${id}`
                 }
 
-                return `get?page=${currentPage}&rowsPerPage=${itemsPerPage}&role=${role}${(search && search !== '') ? `&search=${search}` : ``}${(sortBy && sortBy !== '') ? `&sortBy=${sortBy}` : ``}${(business && business !== '') ? `&business=${business}` : ``}${(from && from !== '') ? `&from=${from}` : ``}${(to && to !== '') ? `&to=${to}` : ``}`
+                return `get?page=${currentPage}&rowsPerPage=${itemsPerPage}${(search && search !== '') ? `&search=${search}` : ``}${(sortBy && sortBy !== '') ? `&sortBy=${sortBy}` : ``}${(business && business !== '') ? `&business=${business}` : ``}${(from && from !== '') ? `&from=${from}` : ``}${(to && to !== '') ? `&to=${to}` : ``}${(args.active !== undefined && args.active !== '') ? `&active=${args.active}` : ``}`
             },
             keepUnusedDataFor: 0
         })

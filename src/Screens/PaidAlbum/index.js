@@ -1,400 +1,219 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-
-import {
-  faCheck,
-  faEllipsisV,
-  faEye,
-  faPencil,
-  faTimes,
-  faTrash,
-} from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faEllipsisV, faEye, faPencil, faShareAlt, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "react-bootstrap";
 
+import CustomButton from "../../Components/CustomButton";
 import CustomInput from "../../Components/CustomInput";
 import CustomModal from "../../Components/CustomModal";
 import CustomPagination from "../../Components/CustomPagination";
 import { DashboardLayout } from "../../Components/Layout/DashboardLayout";
 import Loader from "../../Components/Loader";
 import CustomTable from "../../Components/CustomTable";
-
 import "./style.css";
 
 import {
-  useDeleteAlbumMutation,
-  useGetAlbumsQuery,
   useGetAllAlbumsQuery,
-  useHandleAlbumStatusMutation,
+  useDeletePaidAlbumMutation,
+  useHandlePaidAlbumStatusMutation,
 } from "../../Redux/Apis/Albums";
-import { useUpdateUserMutation } from "../../Redux/Apis/User";
 import { dateFormatter } from "../../Utils";
-import CustomButton from "../../Components/CustomButton";
 import useDebounce from "../../Hooks/useDebounce";
 
-const sortValues = [
-  {
-    text: "Name",
-    value: "fullName",
-  },
-  {
-    text: "Email",
-    value: "email",
-  },
-];
-
 const perPageValues = [
-  {
-    text: "8",
-    value: 8,
-  },
-  {
-    text: "15",
-    value: 15,
-  },
-  {
-    text: "30",
-    value: 30,
-  },
+  { text: "8",  value: 8  },
+  { text: "15", value: 15 },
+  { text: "30", value: 30 },
 ];
 
 const maleHeaders = [
-  {
-    key: "id",
-    title: "S.No",
-  },
-  {
-    key: "name",
-    title: "Name",
-  },
-  {
-    key: "genre",
-    title: "Genre",
-  },
-  {
-    key: "no_of_tracks",
-    title: "No. of Tracks",
-  },
-  {
-    key: "length",
-    title: "Length",
-  },
-  {
-    key: "free",
-    title: "Type",
-  },
-  {
-    key: "registered",
-    title: "Created At",
-  },
-  {
-    key: "status",
-    title: "Status",
-  },
-  {
-    key: "price",
-    title: "Price",
-  },
+  { key: "id",       title: "S.No"       },
+  { key: "name",     title: "Name"       },
+  { key: "genre",    title: "Genre"      },
+  { key: "tracks",   title: "Tracks"     },
+  { key: "length",   title: "Length"     },
+  { key: "price",    title: "Price"      },
+  { key: "created",  title: "Created At" },
+  { key: "status",   title: "Status"     },
+  { key: "actions",  title: "Actions"    },
 ];
 
 const PaidAlbum = () => {
   const navigate = useNavigate();
-  const [changeAlbumStatus, { isLoading: isUpdating }] =
-    useHandleAlbumStatusMutation();
-  const [deleteAlbumApi, { isLoading: isDeleting, isSuccess: deleteSuccess }] =
-    useDeleteAlbumMutation();
 
-  const [showModal, setShowModal] = useState(false);
-  const [showModal2, setShowModal2] = useState(false);
-  const [showModal3, setShowModal3] = useState(false);
-  const [showModal4, setShowModal4] = useState(false);
+  const [handleStatus,  { isLoading: isUpdating }]                    = useHandlePaidAlbumStatusMutation();
+  const [deletePaidAlbumApi, { isLoading: isDeleting, isSuccess: deleteSuccess }] = useDeletePaidAlbumMutation();
 
-  const [deleteModal, setDeleteModal] = useState(false);
-  const [confirmDeleteModal, setConfirmDeleteModal] = useState(false);
+  const [showInactiveConfirm, setShowInactiveConfirm] = useState(false);
+  const [showInactiveDone,    setShowInactiveDone]    = useState(false);
+  const [showActiveConfirm,   setShowActiveConfirm]   = useState(false);
+  const [showActiveDone,      setShowActiveDone]      = useState(false);
+  const [deleteModal,         setDeleteModal]         = useState(false);
+  const [confirmDeleteModal,  setConfirmDeleteModal]  = useState(false);
 
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage,  setCurrentPage]  = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(perPageValues[0].value);
-  const [selectedUserId, setSelectedUserId] = useState();
-  const [isFilterOpen, setIsFilterOpen] = useState(false);
-
-  const [sortBy, setSortBy] = useState(sortValues[0].value);
-  const [from, setFrom] = useState("");
-  const [to, setTo] = useState("");
+  const [selectedId,   setSelectedId]   = useState(null);
 
   const [search, debouncedValue, onChange] = useDebounce();
 
-  const {
-    data,
-    isFetching: isLoading,
-    refetch,
-  } = useGetAllAlbumsQuery({
+  const { data, isFetching: isLoading, refetch } = useGetAllAlbumsQuery({
     page: currentPage,
     rowsPerPage: itemsPerPage,
-    ...(debouncedValue && debouncedValue !== ""
-      ? { search: debouncedValue }
-      : {}),
-    ...(from && from !== "" ? { from } : {}),
-    ...(to && to !== "" ? { to } : {}),
+    ...(debouncedValue ? { search: debouncedValue } : {}),
   });
 
+  // After delete succeeds
   useEffect(() => {
     if (deleteSuccess) {
       refetch();
-      setSelectedUserId();
+      setSelectedId(null);
       setDeleteModal(false);
       setConfirmDeleteModal(true);
     }
   }, [deleteSuccess]);
 
-  const handlePageChange = (pageNumber) => {
-    setCurrentPage(pageNumber);
-  };
+  useEffect(() => { document.title = "JetJams | Paid Albums"; }, []);
 
-  const inactiveMale = async () => {
-    await changeAlbumStatus(selectedUserId);
+  const doInactive = async () => {
+    await handleStatus(selectedId);
     refetch();
-    setSelectedUserId();
-    setShowModal(false);
-    setShowModal2(true);
+    setSelectedId(null);
+    setShowInactiveConfirm(false);
+    setShowInactiveDone(true);
   };
 
-  const activeMale = async () => {
-    await changeAlbumStatus(selectedUserId);
+  const doActive = async () => {
+    await handleStatus(selectedId);
     refetch();
-    setSelectedUserId();
-    setShowModal3(false);
-    setShowModal4(true);
+    setSelectedId(null);
+    setShowActiveConfirm(false);
+    setShowActiveDone(true);
   };
 
-  const deleteAlbum = async () => {
-    await deleteAlbumApi(selectedUserId);
+  const doDelete = async () => {
+    await deletePaidAlbumApi(selectedId);
   };
-
-  const handleChange = (e) => {
-    onChange(e.target.value);
-  };
-
-  useEffect(() => {
-    document.title = "JetJams | Albums";
-  }, []);
 
   return (
-    <>
-      <DashboardLayout>
-        <div className="container-fluid">
-          <div className="row mb-3">
-            <div className="col-12">
-              <div className="dashCard">
-                <div className="row mb-3 justify-content-between">
-                  <div className="col-md-6 mb-2">
-                    <h2 className="mainTitle">Packages</h2>
-                  </div>
-                  <div className="col-md-6 mb-2">
-                    <div className="addUser">
-                      <CustomButton
-                        type="button"
-                        text="Add Paid Album"
-                        className="primaryButton"
-                        onClick={() => navigate("/paid-albums/add")}
-                      />
-                      {/* <CustomButton type="button" icon={faFilter} className="primaryButton rounded-50" onClick={toggleFilter} /> */}
-                      <CustomInput
-                        type="text"
-                        placeholder="Search Here..."
-                        value={search}
-                        inputClass="mainInput"
-                        onChange={handleChange}
-                      />
-                    </div>
+    <DashboardLayout>
+      <div className="container-fluid">
+        <div className="row mb-3">
+          <div className="col-12">
+            <div className="dashCard">
+              {/* Header */}
+              <div className="row mb-3 justify-content-between align-items-center">
+                <div className="col-md-6 mb-2">
+                  <h2 className="mainTitle">Paid Albums</h2>
+                </div>
+                <div className="col-md-6 mb-2">
+                  <div className="addUser d-flex gap-2">
+                    <CustomButton
+                      type="button"
+                      text="Add Paid Album"
+                      className="primaryButton"
+                      onClick={() => navigate("/paid-albums/add")}
+                    />
+                    <CustomInput
+                      type="text"
+                      placeholder="Search..."
+                      value={search}
+                      inputClass="mainInput"
+                      onChange={e => onChange(e.target.value)}
+                    />
                   </div>
                 </div>
-                <div className="row mb-3">
-                  {isLoading ? (
-                    <Loader />
-                  ) : (
-                    <div className="col-12">
-                      <CustomTable
-                        headers={maleHeaders}
-                        isFilterOpen={isFilterOpen}
-                        dateFilter={false}
-                        filterSort={true}
-                        perPage={true}
-                        filterSortValues={sortValues}
-                        perPageValues={perPageValues}
-                        filterSortValue={sortBy}
-                        setFilterSortValue={setSortBy}
-                        filterFrom={from}
-                        setFilterFrom={setFrom}
-                        filterTo={to}
-                        setFilterTo={setTo}
-                        itemsPerPage={itemsPerPage}
-                        setItemsPerPage={setItemsPerPage}
-                        length={data?.data?.length}
-                      >
-                        <tbody>
-                          {data?.data?.map((item, index) => (
-                            <tr key={item._id}>
-                              <td>
-                                {index + 1 + (currentPage - 1) * itemsPerPage}
-                              </td>
-                              <td className="text-capitalize">{item.name}</td>
-                              <td>{item?.genre?.name}</td>
-                              <td>{item?.tracks?.length}</td>
-                              <td>{item?.length / 60} Minutes</td>
-                              <td>{item?.free ? "Free" : "Paid"}</td>
-                              <td>{dateFormatter(item.createdAt)}</td>
-                              <td
-                                className={
-                                  item.active ? "greenColor" : "redColor"
-                                }
-                              >
-                                {item.active ? "Active" : "Inactive"}
-                              </td>
-                              {/* <td>
-                                <Dropdown className="tableDropdown">
-                                  <Dropdown.Toggle
-                                    variant="transparent"
-                                    className="notButton classicToggle"
+              </div>
+
+              {/* Table */}
+              <div className="row mb-3">
+                {isLoading ? <Loader /> : (
+                  <div className="col-12">
+                    <CustomTable headers={maleHeaders} length={data?.data?.length}>
+                      <tbody>
+                        {data?.data?.map((item, index) => (
+                          <tr key={item._id}>
+                            <td>{(index + 1) + ((currentPage - 1) * itemsPerPage)}</td>
+                            <td className="text-capitalize">{item.name}</td>
+                            <td>{item?.genre?.name || "—"}</td>
+                            <td>{item?.tracks?.length ?? 0}</td>
+                            <td>{((item?.length || 0) / 60).toFixed(0)} min</td>
+                            <td><strong>${item.price}</strong></td>
+                            <td>{dateFormatter(item.createdAt)}</td>
+                            <td className={item.active ? "greenColor" : "redColor"}>
+                              {item.active ? "Active" : "Inactive"}
+                            </td>
+                            <td>
+                              <Dropdown className="tableDropdown">
+                                <Dropdown.Toggle variant="transparent" className="notButton classicToggle">
+                                  <FontAwesomeIcon icon={faEllipsisV} />
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu align="end" className="tableDropdownMenu">
+                                  <Link to={`/paid-albums/${item._id}`} className="tableAction">
+                                    <FontAwesomeIcon icon={faEye} className="tableActionIcon" />View
+                                  </Link>
+                                  <Link to={`/paid-albums/edit/${item._id}`} className="tableAction">
+                                    <FontAwesomeIcon icon={faPencil} className="tableActionIcon" />Edit
+                                  </Link>
+                                  <button
+                                    onClick={() => {
+                                      const url = `${process.env.REACT_APP_SITE_URL || 'https://www.jetjams.net'}/purchase-album/${item._id}`;
+                                      navigator.clipboard.writeText(url);
+                                      alert('Shareable link copied to clipboard!');
+                                    }}
+                                    className="tableAction"
                                   >
-                                    <FontAwesomeIcon icon={faEllipsisV} />
-                                  </Dropdown.Toggle>
-                                  <Dropdown.Menu
-                                    align="end"
-                                    className="tableDropdownMenu"
+                                    <FontAwesomeIcon icon={faShareAlt} className="tableActionIcon" />Copy Link
+                                  </button>
+                                  <button
+                                    onClick={() => {
+                                      setSelectedId(item._id);
+                                      item.active ? setShowInactiveConfirm(true) : setShowActiveConfirm(true);
+                                    }}
+                                    className="tableAction"
                                   >
-                                    <Link
-                                      to={`/albums/${item._id}`}
-                                      className="tableAction"
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faEye}
-                                        className="tableActionIcon"
-                                      />
-                                      View
-                                    </Link>
-                                    <Link
-                                      to={`/albums/edit/${item._id}`}
-                                      className="tableAction"
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faPencil}
-                                        className="tableActionIcon"
-                                      />
-                                      Edit
-                                    </Link>
-                                    <button
-                                      onClick={() => {
-                                        setSelectedUserId(item._id);
-                                        item.active
-                                          ? setShowModal(true)
-                                          : setShowModal3(true);
-                                      }}
-                                      className="tableAction"
-                                    >
-                                      {item.active ? (
-                                        <FontAwesomeIcon
-                                          icon={faTimes}
-                                          className="tableActionIcon"
-                                        />
-                                      ) : (
-                                        <FontAwesomeIcon
-                                          icon={faCheck}
-                                          className="tableActionIcon"
-                                        />
-                                      )}
-                                      {item.active ? "Inactive" : "Active"}
-                                    </button>
-                                    <button
-                                      onClick={() => {
-                                        setSelectedUserId(item._id);
-                                        setDeleteModal(true);
-                                      }}
-                                      className="tableAction"
-                                    >
-                                      <FontAwesomeIcon
-                                        icon={faTrash}
-                                        className="tableActionIcon"
-                                      />{" "}
-                                      Delete
-                                    </button>
-                                  </Dropdown.Menu>
-                                </Dropdown>
-                              </td> */}
-                              <td>${item.price}</td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </CustomTable>
-                      <CustomPagination
-                        length={data?.data?.length}
-                        itemsPerPage={itemsPerPage}
-                        totalItems={data?.total}
-                        currentPage={currentPage}
-                        onPageChange={handlePageChange}
-                      />
-                    </div>
-                  )}
-                </div>
+                                    {item.active
+                                      ? <><FontAwesomeIcon icon={faTimes} className="tableActionIcon" />Deactivate</>
+                                      : <><FontAwesomeIcon icon={faCheck} className="tableActionIcon" />Activate</>
+                                    }
+                                  </button>
+                                  <button
+                                    onClick={() => { setSelectedId(item._id); setDeleteModal(true); }}
+                                    className="tableAction text-danger"
+                                  >
+                                    <FontAwesomeIcon icon={faTrash} className="tableActionIcon" />Delete
+                                  </button>
+                                </Dropdown.Menu>
+                              </Dropdown>
+                            </td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </CustomTable>
+                    <CustomPagination
+                      length={data?.data?.length}
+                      itemsPerPage={itemsPerPage}
+                      totalItems={data?.total}
+                      currentPage={currentPage}
+                      onPageChange={p => setCurrentPage(p)}
+                    />
+                  </div>
+                )}
               </div>
             </div>
           </div>
-
-          <CustomModal
-            loading={isUpdating}
-            show={showModal}
-            close={() => {
-              setShowModal(false);
-            }}
-            action={inactiveMale}
-            heading="Are you sure you want to mark this album as Inactive?"
-          />
-          <CustomModal
-            show={showModal2}
-            close={() => {
-              setShowModal2(false);
-            }}
-            success
-            heading="Marked as Inactive"
-          />
-
-          <CustomModal
-            loading={isUpdating}
-            show={showModal3}
-            close={() => {
-              setShowModal3(false);
-            }}
-            action={activeMale}
-            heading="Are you sure you want to mark this album as Active?"
-          />
-          <CustomModal
-            show={showModal4}
-            close={() => {
-              setShowModal4(false);
-            }}
-            success
-            heading="Marked as Active"
-          />
-
-          <CustomModal
-            loading={isDeleting}
-            show={deleteModal}
-            close={() => {
-              setDeleteModal(false);
-            }}
-            action={deleteAlbum}
-            heading="Are you sure you want to delete this album?"
-          />
-          <CustomModal
-            show={confirmDeleteModal}
-            close={() => {
-              setConfirmDeleteModal(false);
-            }}
-            success
-            heading="Album Deleted Successfully"
-          />
         </div>
-      </DashboardLayout>
-    </>
+      </div>
+
+      {/* Modals */}
+      <CustomModal loading={isUpdating} show={showInactiveConfirm} close={() => setShowInactiveConfirm(false)} action={doInactive} heading="Mark this album as Inactive?" />
+      <CustomModal show={showInactiveDone} close={() => setShowInactiveDone(false)} success heading="Album marked as Inactive" />
+      <CustomModal loading={isUpdating} show={showActiveConfirm} close={() => setShowActiveConfirm(false)} action={doActive} heading="Mark this album as Active?" />
+      <CustomModal show={showActiveDone} close={() => setShowActiveDone(false)} success heading="Album marked as Active" />
+      <CustomModal loading={isDeleting} show={deleteModal} close={() => setDeleteModal(false)} action={doDelete} heading="Delete this paid album? This cannot be undone." />
+      <CustomModal show={confirmDeleteModal} close={() => setConfirmDeleteModal(false)} success heading="Paid Album Deleted Successfully" />
+    </DashboardLayout>
   );
 };
 

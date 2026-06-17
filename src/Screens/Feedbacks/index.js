@@ -23,7 +23,7 @@ import Loader from "../../Components/Loader";
 const sortValues = [
   {
     text: "Name",
-    value: "fullName",
+    value: "name",
   },
   {
     text: "Email",
@@ -168,6 +168,7 @@ export const Feedbacks = () => {
                           setFilterTo={setTo}
                           itemsPerPage={itemsPerPage}
                           setItemsPerPage={setItemsPerPage}
+                          length={data?.data?.length}
                         >
                           <tbody>
                             {data?.data?.map((item, index) => (

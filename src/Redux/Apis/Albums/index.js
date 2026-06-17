@@ -51,6 +51,32 @@ export const albumApiService = createApi({
         body: payload,
       }),
     }),
+    updatePaidAlbum: builder.mutation({
+      query: (payload) => ({
+        url: `update-paid/${payload?.id}`,
+        method: "PUT",
+        body: payload,
+      }),
+    }),
+    getPaidAlbumById: builder.query({
+      query: (id) => ({
+        url: `get-paid-album/${id}`,
+        method: "GET",
+      }),
+      keepUnusedDataFor: 0,
+    }),
+    deletePaidAlbum: builder.mutation({
+      query: (id) => ({
+        url: `delete-paid/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    handlePaidAlbumStatus: builder.mutation({
+      query: (id) => ({
+        url: `handle-paid-status/${id}`,
+        method: "PATCH",
+      }),
+    }),
     handleAlbumStatus: builder.mutation({
       query: (id) => ({
         url: `handle-status/${id}`,
@@ -72,6 +98,10 @@ export const {
   useAddPaidAlbumMutation,
   useAddAlbumMutation,
   useUpdateAlbumMutation,
+  useUpdatePaidAlbumMutation,
+  useGetPaidAlbumByIdQuery,
+  useDeletePaidAlbumMutation,
+  useHandlePaidAlbumStatusMutation,
   useDeleteAlbumMutation,
   useHandleAlbumStatusMutation,
 } = albumApiService;
