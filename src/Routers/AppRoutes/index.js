@@ -108,13 +108,13 @@ let AppRoutes = [
     isProtected: true,
   },
   {
-    path: "/paid-albums/:id",
-    element: <PaidAlbumDetails />,
+    path: "/paid-albums/edit/:id",
+    element: <EditPaidAlbum />,
     isProtected: true,
   },
   {
-    path: "/paid-albums/edit/:id",
-    element: <EditPaidAlbum />,
+    path: "/paid-albums/:id",
+    element: <PaidAlbumDetails />,
     isProtected: true,
   },
   // Free Albums

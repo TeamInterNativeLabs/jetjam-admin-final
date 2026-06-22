@@ -9,9 +9,15 @@ import { SelectBox } from "../../Components/CustomSelect";
 import { DashboardLayout } from "../../Components/Layout/DashboardLayout";
 import Loader from "../../Components/Loader";
 import { useGetPaidAlbumByIdQuery, useUpdatePaidAlbumMutation } from "../../Redux/Apis/Albums";
-import { useUploadAudioMutation, useUploadImageMutation } from "../../Redux/Apis/General";
+import { useUploadImageMutation, useUploadZipMutation } from "../../Redux/Apis/General";
 import { useGetGenreQuery } from "../../Redux/Apis/Genre";
 import { useSelector } from "react-redux";
+
+// Derive image host from REACT_APP_BASE_URL since admin has no separate IMAGE_ENDPOINT env var
+const imageBase = () => {
+  const base = process.env.REACT_APP_BASE_URL || "";
+  return base.replace("/jetjams/v1/api", "");
+};
 
 const EditPaidAlbum = () => {
   const { id } = useParams();
@@ -28,7 +34,7 @@ const EditPaidAlbum = () => {
 
   const [updatePaidAlbum, { isLoading, isSuccess, data: updateData }] = useUpdatePaidAlbumMutation();
   const [uploadImage, { isLoading: imageUploading }] = useUploadImageMutation();
-  const [uploadAudio, { isLoading: audioUploading }] = useUploadAudioMutation();
+  const [uploadZip,   { isLoading: zipUploading }]   = useUploadZipMutation();
 
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
   const { fields, append, remove } = useFieldArray({ control, name: "tracks" });
@@ -71,7 +77,7 @@ const EditPaidAlbum = () => {
     if (newFile) {
       const fileForm = new FormData();
       fileForm.append("file", newFile);
-      const fileRes = await uploadAudio(fileForm);
+      const fileRes = await uploadZip(fileForm);
       payload.file = fileRes?.data?.data?.path;
     }
 
@@ -84,7 +90,7 @@ const EditPaidAlbum = () => {
 
   return (
     <DashboardLayout>
-      <Loader loading={isLoading || imageUploading || audioUploading} />
+      <Loader loading={isLoading || imageUploading || zipUploading} />
       <div className="dashCard mb-4">
         <div className="row mb-3">
           <div className="col-12">
@@ -103,7 +109,7 @@ const EditPaidAlbum = () => {
               <img
                 src={newImage
                   ? URL.createObjectURL(newImage)
-                  : `${process.env.REACT_APP_IMAGE_ENDPOINT}${album?.image}`}
+                  : `${imageBase()}/${(album?.image || "").replace(/^\//, "")}`}
                 alt="cover"
                 style={{ width: 200, height: 200, objectFit: 'contain', borderRadius: 12, backgroundColor: '#F0F0F0' }}
               />
@@ -226,7 +232,7 @@ const EditPaidAlbum = () => {
           <div className="row mt-4">
             <div className="col-4">
               <CustomButton type="submit" text="Save Changes"
-                loading={isLoading || imageUploading || audioUploading} />
+                loading={isLoading || imageUploading || zipUploading} />
             </div>
           </div>
         </form>

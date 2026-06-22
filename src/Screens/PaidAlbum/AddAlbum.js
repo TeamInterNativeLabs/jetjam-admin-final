@@ -12,8 +12,8 @@ import {
   useAddPaidAlbumMutation,
 } from "../../Redux/Apis/Albums";
 import {
-  useUploadAudioMutation,
   useUploadImageMutation,
+  useUploadZipMutation,
 } from "../../Redux/Apis/General";
 import { useGetGenreQuery } from "../../Redux/Apis/Genre";
 import { useSelector } from "react-redux";
@@ -48,7 +48,7 @@ const AddPaidAlbum = () => {
   const [submit, { data: albumData, isLoading, isSuccess }] =
     useAddPaidAlbumMutation();
   const [uploadImage, { isLoading: imageUploading }] = useUploadImageMutation();
-  const [uploadAudio, { isLoading: audioUploading }] = useUploadAudioMutation();
+  const [uploadZip, { isLoading: zipUploading }] = useUploadZipMutation();
 
   useEffect(() => {
     document.title = "JetJams | Add Album";
@@ -73,7 +73,7 @@ const AddPaidAlbum = () => {
     file_form.append("file", file);
 
     let image_res = await uploadImage(image_form);
-    let file_res = await uploadAudio(file_form);
+    let file_res = await uploadZip(file_form);
 
     let payload = {
       ...data,
@@ -449,7 +449,7 @@ const AddPaidAlbum = () => {
             <CustomButton
               text="Save"
               onClick={handleSubmit(onSubmit)}
-              loading={isLoading || imageUploading || audioUploading}
+              loading={isLoading || imageUploading || zipUploading}
             />
           </div>
         </div>

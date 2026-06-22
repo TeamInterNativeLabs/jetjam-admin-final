@@ -24,9 +24,10 @@ export const albumApiService = createApi({
       keepUnusedDataFor: 0,
     }),
     getAllAlbums: builder.query({
-      query: () => ({
+      query: (args) => ({
         url: "get-all-paid-album",
         method: "GET",
+        params: args || {},
       }),
       keepUnusedDataFor: 0,
     }),

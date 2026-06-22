@@ -1,11 +1,17 @@
 import React, { useEffect } from "react";
-import { Link, useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { DashboardLayout } from "../../Components/Layout/DashboardLayout";
 import BackButton from "../../Components/BackButton";
 import Loader from "../../Components/Loader";
 import CustomButton from "../../Components/CustomButton";
 import { useGetPaidAlbumByIdQuery } from "../../Redux/Apis/Albums";
 import { dateFormatter } from "../../Utils";
+
+// Admin uses REACT_APP_BASE_URL as the API base; strip /jetjams/v1/api to get image host
+const imageBase = () => {
+  const base = process.env.REACT_APP_BASE_URL || "";
+  return base.replace("/jetjams/v1/api", "");
+};
 
 const PaidAlbumDetails = () => {
   const { id } = useParams();
@@ -15,9 +21,12 @@ const PaidAlbumDetails = () => {
 
   useEffect(() => { document.title = "JetJams | Paid Album Details"; }, []);
 
+  const shareUrl = `${process.env.REACT_APP_SITE_URL || "https://www.jetjams.net"}/purchase-album/${id}`;
+
   return (
     <DashboardLayout>
       <div className="dashCard mb-4">
+        {/* Header */}
         <div className="row mb-3 align-items-center justify-content-between">
           <div className="col">
             <h2 className="mainTitle">
@@ -38,24 +47,25 @@ const PaidAlbumDetails = () => {
                 text="Copy Share Link"
                 className="secondaryButton"
                 onClick={() => {
-                  const url = `${process.env.REACT_APP_SITE_URL || 'https://www.jetjams.net'}/purchase-album/${id}`;
-                  navigator.clipboard.writeText(url);
-                  alert(`Share link copied!\n\n${url}`);
+                  navigator.clipboard.writeText(shareUrl);
+                  alert(`Share link copied!\n\n${shareUrl}`);
                 }}
               />
             </div>
           )}
         </div>
 
-        {isLoading ? <Loader /> : album ? (
+        {isLoading ? (
+          <Loader />
+        ) : album ? (
           <div className="row">
             {/* Cover image */}
             {album.image && (
               <div className="col-12 mb-4">
                 <img
-                  src={`${process.env.REACT_APP_IMAGE_ENDPOINT}${album.image}`}
+                  src={`${imageBase()}/${album.image.replace(/^\//, "")}`}
                   alt="Album cover"
-                  style={{ maxWidth: '200px', borderRadius: '8px', objectFit: 'cover' }}
+                  style={{ maxWidth: "200px", borderRadius: "8px", objectFit: "cover" }}
                 />
               </div>
             )}
@@ -84,8 +94,8 @@ const PaidAlbumDetails = () => {
                 </div>
                 <div className="col-md-4 mb-3">
                   <h4 className="secondaryLabel">Status</h4>
-                  <p className={`secondaryText ${album.active ? 'greenColor' : 'redColor'}`}>
-                    {album.active ? 'Active' : 'Inactive'}
+                  <p className={`secondaryText ${album.active ? "greenColor" : "redColor"}`}>
+                    {album.active ? "Active" : "Inactive"}
                   </p>
                 </div>
                 <div className="col-md-4 mb-3">
@@ -103,7 +113,7 @@ const PaidAlbumDetails = () => {
                 <div className="col-12">
                   <h4 className="secondaryLabel">Tracks ({album?.tracks?.length || 0})</h4>
                   {album?.tracks?.length > 0 ? (
-                    <ol style={{ paddingLeft: '20px' }}>
+                    <ol style={{ paddingLeft: "20px" }}>
                       {album.tracks.map((track, i) => (
                         <li key={track._id || i} className="secondaryText mb-1">
                           {track.name}
@@ -117,35 +127,41 @@ const PaidAlbumDetails = () => {
               </div>
 
               {/* Shareable link */}
-              <div className="col-12 mb-3">
-                <h4 className="secondaryLabel">Shareable Link (share on Facebook, Instagram, etc.)</h4>
-                <div className="d-flex align-items-center gap-2 flex-wrap">
-                  <input
-                    readOnly
-                    type="text"
-                    className="form-control"
-                    value={`${process.env.REACT_APP_SITE_URL || 'https://www.jetjams.net'}/purchase-album/${id}`}
-                    style={{ maxWidth: '500px', fontSize: '12px' }}
-                  />
-                  <button
-                    type="button"
-                    className="btn btn-primary btn-sm"
-                    onClick={() => {
-                      const url = `${process.env.REACT_APP_SITE_URL || 'https://www.jetjams.net'}/purchase-album/${id}`;
-                      navigator.clipboard.writeText(url);
-                      alert('Link copied!');
-                    }}
-                  >
-                    Copy
-                  </button>
+              <div className="row mt-3">
+                <div className="col-12 mb-3">
+                  <h4 className="secondaryLabel">Shareable Link</h4>
+                  <div className="d-flex align-items-center gap-2 flex-wrap">
+                    <input
+                      readOnly
+                      type="text"
+                      className="form-control"
+                      value={shareUrl}
+                      style={{ maxWidth: "500px", fontSize: "12px" }}
+                    />
+                    <button
+                      type="button"
+                      className="btn btn-primary btn-sm"
+                      onClick={() => {
+                        navigator.clipboard.writeText(shareUrl);
+                        alert("Link copied!");
+                      }}
+                    >
+                      Copy
+                    </button>
+                  </div>
+                  <small className="text-muted">
+                    Anyone with this link can view and purchase the album.
+                  </small>
                 </div>
-                <small className="text-muted">Anyone with this link can view the album and purchase it.</small>
               </div>
-                <div className="row mt-3">
+
+              {/* Album file */}
+              {album.file && (
+                <div className="row mt-2">
                   <div className="col-12">
-                    <h4 className="secondaryLabel">Album File</h4>
+                    <h4 className="secondaryLabel">Album ZIP File</h4>
                     <a
-                      href={`${process.env.REACT_APP_IMAGE_ENDPOINT}${album.file}`}
+                      href={`${imageBase()}/${album.file.replace(/^\//, "")}`}
                       target="_blank"
                       rel="noreferrer"
                       className="primaryColor"

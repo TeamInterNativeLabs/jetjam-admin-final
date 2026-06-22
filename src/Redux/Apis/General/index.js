@@ -44,6 +44,13 @@ export const generalApiService = createApi({
                 body: payload
             })
         }),
+        uploadZip: builder.mutation({
+            query: (payload) => ({
+                url: 'upload-zip',
+                method: 'POST',
+                body: payload
+            })
+        }),
     })
 })
 
@@ -53,5 +60,6 @@ export const {
     useGetDashboardQuery,
     useUploadAudioMutation,
     useUploadImageMutation,
-    useUploadVideoMutation
+    useUploadVideoMutation,
+    useUploadZipMutation
 } = generalApiService
