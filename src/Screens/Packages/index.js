@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { faCheck, faEllipsisV, faEye, faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faEllipsisV, faEye, faTimes, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "react-bootstrap";
 
@@ -18,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 import { useGetPackagesQuery, useDeletePackageMutation } from "../../Redux/Apis/Package";
 import { dateFormatter } from "../../Utils";
 import CustomButton from "../../Components/CustomButton";
+import useDebounce from "../../Hooks/useDebounce";
 
 const sortValues = [
   {
@@ -58,10 +59,12 @@ const Packages = () => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
+  const [search, debouncedValue, onChange] = useDebounce();
+
   const { data, isLoading, refetch } = useGetPackagesQuery({
     currentPage,
     itemsPerPage,
-    search: inputValue,
+    search: debouncedValue,
     sortBy,
     from,
     to,
@@ -91,7 +94,8 @@ const Packages = () => {
   };
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
+    onChange(e.target.value);
+    setCurrentPage(1);
   }
 
   useEffect(() => {
@@ -138,7 +142,8 @@ const Packages = () => {
                   </div>
                   <div className="col-md-6 mb-2 d-flex align-items-center gap-2 justify-content-md-end">
                     <CustomButton type="button" text="Add Package" className="primaryButton" onClick={() => navigate('/packages/add')} />
-                    <CustomInput type="text" placeholder="Search Here..." value={inputValue} inputClass="mainInput" onChange={handleChange} />
+                    <CustomButton type="button" icon={faFilter} className="primaryButton rounded-50" onClick={toggleFilter} />
+                    <CustomInput type="text" placeholder="Search Here..." value={search} inputClass="mainInput" onChange={handleChange} />
                   </div>
                 </div>
                 <div className="row mb-3">
@@ -154,13 +159,13 @@ const Packages = () => {
                           filterSortValues={sortValues}
                           perPageValues={perPageValues}
                           filterSortValue={sortBy}
-                          setFilterSortValue={setSortBy}
+                          setFilterSortValue={(val) => { setSortBy(val); setCurrentPage(1); }}
                           filterFrom={from}
-                          setFilterFrom={setFrom}
+                          setFilterFrom={(val) => { setFrom(val); setCurrentPage(1); }}
                           filterTo={to}
-                          setFilterTo={setTo}
+                          setFilterTo={(val) => { setTo(val); setCurrentPage(1); }}
                           itemsPerPage={itemsPerPage}
-                          setItemsPerPage={setItemsPerPage}
+                          setItemsPerPage={(val) => { setItemsPerPage(Number(val)); setCurrentPage(1); }}
                           length={packagesList?.length}
                         >
                           <tbody>

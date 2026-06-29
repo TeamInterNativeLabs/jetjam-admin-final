@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
-import { faCheck, faEllipsisV, faEye, faTimes, faTrash } from "@fortawesome/free-solid-svg-icons";
+import { faCheck, faEllipsisV, faEye, faTimes, faTrash, faFilter } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { Dropdown } from "react-bootstrap";
 
@@ -18,6 +18,7 @@ import CustomButton from "../../Components/CustomButton";
 import { useDeleteSnpVideoMutation, useGetSnpVideoQuery } from "../../Redux/Apis/SnpVideo";
 import { useUpdateUserMutation } from "../../Redux/Apis/User";
 import { dateFormatter } from "../../Utils";
+import useDebounce from "../../Hooks/useDebounce";
 
 const sortValues = [
   {
@@ -69,10 +70,14 @@ const SnpVideos = () => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
+  const [search, debouncedValue, onChange] = useDebounce();
+
+  const toggleFilter = () => setIsFilterOpen(!isFilterOpen);
+
   const { data, isLoading, isFetching, refetch } = useGetSnpVideoQuery({
     currentPage,
     itemsPerPage,
-    search: inputValue,
+    search: debouncedValue,
     sortBy,
     from,
     to,
@@ -112,7 +117,8 @@ const SnpVideos = () => {
   }
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
+    onChange(e.target.value);
+    setCurrentPage(1);
   }
 
   useEffect(() => {
@@ -156,8 +162,8 @@ const SnpVideos = () => {
                   <div className="col-md-6 mb-2">
                     <div className="addUser">
                       <CustomButton type="button" text="Add Video" className="primaryButton" onClick={() => navigate("/snp-videos/add")} />
-                      {/* <CustomButton type="button" icon={faFilter} className="primaryButton rounded-50" onClick={toggleFilter} /> */}
-                      <CustomInput type="text" placeholder="Search Here..." value={inputValue} inputClass="mainInput" onChange={handleChange} />
+                      <CustomButton type="button" icon={faFilter} className="primaryButton rounded-50" onClick={toggleFilter} />
+                      <CustomInput type="text" placeholder="Search Here..." value={search} inputClass="mainInput" onChange={handleChange} />
                     </div>
                   </div>
                 </div>
@@ -174,13 +180,13 @@ const SnpVideos = () => {
                           filterSortValues={sortValues}
                           perPageValues={perPageValues}
                           filterSortValue={sortBy}
-                          setFilterSortValue={setSortBy}
+                          setFilterSortValue={(val) => { setSortBy(val); setCurrentPage(1); }}
                           filterFrom={from}
-                          setFilterFrom={setFrom}
+                          setFilterFrom={(val) => { setFrom(val); setCurrentPage(1); }}
                           filterTo={to}
-                          setFilterTo={setTo}
+                          setFilterTo={(val) => { setTo(val); setCurrentPage(1); }}
                           itemsPerPage={itemsPerPage}
-                          setItemsPerPage={setItemsPerPage}
+                          setItemsPerPage={(val) => { setItemsPerPage(Number(val)); setCurrentPage(1); }}
                           length={data?.data?.length}
                         >
                           <tbody>

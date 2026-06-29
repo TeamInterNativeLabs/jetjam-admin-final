@@ -15,6 +15,7 @@ import "./style.css";
 import CustomFilters from "../../Components/CustomFilters";
 import ProductCard from "../../Components/ProductCard";
 import { useGetProductsQuery, useUpdateProductMutation } from "../../Redux/Apis/Product";
+import useDebounce from "../../Hooks/useDebounce";
 
 const sortValues = [
     {
@@ -63,7 +64,7 @@ export const Products = () => {
     const [showModal6, setShowModal6] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(perPageValues[0].value);
-    const [inputValue, setInputValue] = useState('');
+    const [search, debouncedValue, onChange] = useDebounce();
     const [selectedProductId, setSelectedProductId] = useState();
     const [isFilterOpen, setIsFilterOpen] = useState(false);
 
@@ -75,7 +76,7 @@ export const Products = () => {
         currentPage,
         itemsPerPage: itemsPerPage,
         role: "user",
-        search: inputValue,
+        search: debouncedValue,
         sortBy,
         from,
         to
@@ -113,7 +114,7 @@ export const Products = () => {
 
     const handleChange = (e) => {
         setCurrentPage(1)
-        setInputValue(e.target.value);
+        onChange(e.target.value);
     }
 
     useEffect(() => {
@@ -135,7 +136,7 @@ export const Products = () => {
                                         <div className="addUser">
                                             {/* <CustomButton type="button" text="Add User" className="primaryButton" /> */}
                                             <CustomButton type="button" icon={faFilter} className="primaryButton rounded-50" onClick={toggleFilter} />
-                                            <CustomInput type="text" placeholder="Search Here..." value={inputValue} inputClass="mainInput" onChange={handleChange} />
+                                            <CustomInput type="text" placeholder="Search Here..." value={search} inputClass="mainInput" onChange={handleChange} />
                                         </div>
                                     </div>
                                     <CustomFilters
@@ -159,7 +160,7 @@ export const Products = () => {
                                         perPage
                                         perPageValues={perPageValues}
                                         itemsPerPage={itemsPerPage}
-                                        setItemsPerPage={setItemsPerPage}
+                                        setItemsPerPage={(val) => { setItemsPerPage(Number(val)); setCurrentPage(1); }}
                                     />
                                 </div>
                                 <div className="row mb-3 justify-content-end">

@@ -18,6 +18,7 @@ import "./style.css";
 import { useUpdateUserMutation, useGetUsersQuery } from "../../Redux/Apis/User";
 import { dateFormatter } from "../../Utils";
 import { placeholderImage } from "../../Assets/images";
+import useDebounce from "../../Hooks/useDebounce";
 
 const sortValues = [
   {
@@ -64,11 +65,13 @@ export const Representatives = () => {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
 
+  const [search, debouncedValue, onChange] = useDebounce();
+
   const { data, isLoading, isFetching, refetch } = useGetUsersQuery({
     currentPage,
     itemsPerPage,
     role: "representative",
-    search: inputValue,
+    search: debouncedValue,
     sortBy,
     from,
     to,
@@ -97,7 +100,8 @@ export const Representatives = () => {
   }
 
   const handleChange = (e) => {
-    setInputValue(e.target.value);
+    onChange(e.target.value);
+    setCurrentPage(1);
   }
 
   useEffect(() => {
@@ -150,7 +154,7 @@ export const Representatives = () => {
                     <div className="addUser">
                       {/* <CustomButton type="button" text="Add User" className="primaryButton" /> */}
                       <CustomButton type="button" icon={faFilter} className="primaryButton rounded-50" onClick={toggleFilter} />
-                      <CustomInput type="text" placeholder="Search Here..." value={inputValue} inputClass="mainInput" onChange={handleChange} />
+                      <CustomInput type="text" placeholder="Search Here..." value={search} inputClass="mainInput" onChange={handleChange} />
                     </div>
                   </div>
                 </div>
@@ -167,13 +171,13 @@ export const Representatives = () => {
                           filterSortValues={sortValues}
                           perPageValues={perPageValues}
                           filterSortValue={sortBy}
-                          setFilterSortValue={setSortBy}
+                          setFilterSortValue={(val) => { setSortBy(val); setCurrentPage(1); }}
                           filterFrom={from}
-                          setFilterFrom={setFrom}
+                          setFilterFrom={(val) => { setFrom(val); setCurrentPage(1); }}
                           filterTo={to}
-                          setFilterTo={setTo}
+                          setFilterTo={(val) => { setTo(val); setCurrentPage(1); }}
                           itemsPerPage={itemsPerPage}
-                          setItemsPerPage={setItemsPerPage}
+                          setItemsPerPage={(val) => { setItemsPerPage(Number(val)); setCurrentPage(1); }}
                           length={data?.data?.length}
                           buttonLabel="Add Representative"
                           onClickButton={() => navigate('/add-representative')}
