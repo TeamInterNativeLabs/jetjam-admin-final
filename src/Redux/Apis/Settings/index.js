@@ -3,7 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const settingsApi = createApi({
   reducerPath: "settingsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${process.env.REACT_APP_BASE_URL}settings`,
+    baseUrl: `${process.env.REACT_APP_BASE_URL}/settings`,
     prepareHeaders: (headers) => {
       const authSlice = JSON.parse(localStorage.getItem("persist:jetjams-admin"));
       if (authSlice && authSlice.authSlice) {
