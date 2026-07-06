@@ -4,13 +4,10 @@ export const settingsApi = createApi({
   reducerPath: "settingsApi",
   baseQuery: fetchBaseQuery({
     baseUrl: `${process.env.REACT_APP_BASE_URL}/settings`,
-    prepareHeaders: (headers) => {
-      const authSlice = JSON.parse(localStorage.getItem("persist:jetjams-admin"));
-      if (authSlice && authSlice.authSlice) {
-        const auth = JSON.parse(authSlice.authSlice);
-        if (auth.token) {
-          headers.set("authorization", `Bearer ${auth.token}`);
-        }
+    prepareHeaders: (headers, { getState }) => {
+      const token = getState().authSlice.token;
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
       }
       return headers;
     },
