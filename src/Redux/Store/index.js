@@ -32,6 +32,7 @@ import { subscriptionApiService } from "../Apis/Subscription";
 import AuthSlice, { logout } from "../Slices/Auth";
 import GeneralSlice from "../Slices/General";
 import { snpVideoApiService } from "../Apis/SnpVideo";
+import { settingsApi } from "../Apis/Settings";
 
 const apiErrorHandler = (store) => (next) => (action) => {
   if (action.type.endsWith("/rejected")) {
@@ -72,6 +73,7 @@ export const rootReducers = combineReducers({
   [discountApiService.reducerPath]: discountApiService.reducer,
   [bannerApiService.reducerPath]: bannerApiService.reducer,
   [snpVideoApiService.reducerPath]: snpVideoApiService.reducer,
+  [settingsApi.reducerPath]: settingsApi.reducer,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducers);
@@ -102,6 +104,7 @@ export const store = configureStore({
       .concat(bannerApiService.middleware)
       .concat(bannerApiService.middleware)
       .concat(snpVideoApiService.middleware)
+      .concat(settingsApi.middleware)
       .concat(apiErrorHandler),
 });
 

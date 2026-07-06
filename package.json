@@ -20,6 +20,7 @@
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
+    "@tinymce/tinymce-react": "^6.3.0",
     "babel-loader": "^9.1.2",
     "bootstrap": "^5.2.3",
     "copy-webpack-plugin": "^11.0.0",

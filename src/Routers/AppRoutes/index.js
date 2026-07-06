@@ -41,6 +41,7 @@ import OrderDetails from "../../Screens/Orders/OrderDetails";
 import Profile from "../../Screens/Profile";
 import EditProfile from "../../Screens/Profile/EditProfile";
 import ChangePassword from "../../Screens/Profile/ChangePassword";
+import { FitMixSettings } from "../../Screens/FitMixSettings";
 
 let AppRoutes = [
   {
@@ -240,6 +241,11 @@ let AppRoutes = [
   {
     path: "/profile/change-password",
     element: <ChangePassword />,
+    isProtected: true,
+  },
+  {
+    path: "/settings",
+    element: <FitMixSettings />,
     isProtected: true,
   },
   {

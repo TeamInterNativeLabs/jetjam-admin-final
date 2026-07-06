@@ -11,6 +11,7 @@ import "./style.css";
 
 import { useGetSubscriptionsQuery } from "../../Redux/Apis/Subscription";
 import { dateFormatter } from "../../Utils";
+import useDebounce from "../../Hooks/useDebounce";
 
 const sortValues = [
   { text: "Subscribed On", value: "createdAt" },
@@ -39,11 +40,13 @@ const Subscriptions = () => {
   const [from,         setFrom]         = useState("");
   const [to,           setTo]           = useState("");
   const [activeFilter, setActiveFilter] = useState("");
+  
+  const [search, debouncedValue, onChange] = useDebounce();
 
   const { data, isLoading, refetch } = useGetSubscriptionsQuery({
     currentPage,
     itemsPerPage,
-    search: inputValue,
+    search: debouncedValue,
     sortBy,
     from,
     to,
@@ -51,7 +54,7 @@ const Subscriptions = () => {
   });
 
   const handlePageChange = (pageNumber) => setCurrentPage(pageNumber);
-  const handleChange     = (e) => { setCurrentPage(1); setInputValue(e.target.value); };
+  const handleChange     = (e) => { setCurrentPage(1); setInputValue(e.target.value); onChange(e.target.value); };
   const toggleFilter     = () => setIsFilterOpen(!isFilterOpen);
 
   useEffect(() => { document.title = 'JetJams | Subscriptions'; }, []);
@@ -91,7 +94,7 @@ const Subscriptions = () => {
                     <CustomInput
                       type="text"
                       placeholder="Search by user..."
-                      value={inputValue}
+                      value={search}
                       inputClass="mainInput"
                       onChange={handleChange}
                     />
@@ -164,7 +167,7 @@ const Subscriptions = () => {
                       onClick={() => {
                         setFrom(""); setTo(""); setActiveFilter("");
                         setSortBy(sortValues[0].value);
-                        setInputValue(""); setCurrentPage(1);
+                        setInputValue(""); onChange(""); setCurrentPage(1);
                       }}
                     />
                   </div>

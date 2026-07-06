@@ -5,6 +5,7 @@ import {
   faBorderAll,
   faBox,
   faUser,
+  faCog,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -61,6 +62,11 @@ const LINKS = [
     to: "/notifications",
     title: "Notifications",
     icon: faBorderAll,
+  },
+  {
+    to: "/settings",
+    title: "Fit-Mix Settings",
+    icon: faCog,
   },
 ];
 
