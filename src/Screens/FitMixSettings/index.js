@@ -5,7 +5,8 @@ import CustomInput from "../../Components/CustomInput";
 import CustomButton from "../../Components/CustomButton";
 import { toast } from "react-toastify";
 import { useGetSettingsQuery, useUpdateSettingsMutation } from "../../Redux/Apis/Settings";
-import { Editor } from '@tinymce/tinymce-react';
+import ReactQuill from 'react-quill';
+import 'react-quill/dist/quill.snow.css';
 
 export const FitMixSettings = () => {
   const { data: settingsData, isLoading } = useGetSettingsQuery();
@@ -90,24 +91,20 @@ export const FitMixSettings = () => {
 
               <div className="col-md-12 mb-4">
                 <label className="mb-2">Fit-Mix Message content</label>
-                <Editor
-                  apiKey="1nt9lft4j7ix2j9t6pfr2tns0s80287l0u23z7q2r9w3j2f0"
+                <ReactQuill 
+                  theme="snow"
                   value={formData.fitMixMessageHTML}
-                  init={{
-                    height: 400,
-                    menubar: false,
-                    plugins: [
-                      'advlist autolink lists link image charmap print preview anchor',
-                      'searchreplace visualblocks code fullscreen',
-                      'insertdatetime media table paste code help wordcount'
-                    ],
-                    toolbar: 'undo redo | formatselect | ' +
-                    'bold italic backcolor | alignleft aligncenter ' +
-                    'alignright alignjustify | bullist numlist outdent indent | ' +
-                    'removeformat | help',
-                    content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
+                  onChange={handleEditorChange}
+                  style={{ height: '300px', marginBottom: '50px' }}
+                  modules={{
+                    toolbar: [
+                      [{ 'header': [1, 2, false] }],
+                      ['bold', 'italic', 'underline', 'strike', 'blockquote'],
+                      [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+                      ['link', 'image', 'video'],
+                      ['clean']
+                    ]
                   }}
-                  onEditorChange={handleEditorChange}
                 />
               </div>
 
