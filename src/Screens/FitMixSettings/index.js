@@ -36,7 +36,8 @@ export const FitMixSettings = () => {
       setFormData(prev => ({
         ...prev,
         imageFile: file,
-        imagePreview: URL.createObjectURL(file)
+        imagePreview: URL.createObjectURL(file),
+        fitMixVideoUrl: "" // Clear video URL when image is selected
       }));
     }
   };
@@ -52,6 +53,9 @@ export const FitMixSettings = () => {
     submitData.append("fitMixMessageHTML", formData.fitMixMessageHTML);
     if (formData.imageFile) {
       submitData.append("fitMixImage", formData.imageFile);
+    } else if (!formData.imagePreview) {
+      // If there is no imagePreview, we want to clear the image in the DB
+      submitData.append("fitMixImage", "");
     }
     
     try {
@@ -85,7 +89,12 @@ export const FitMixSettings = () => {
                   type="text"
                   placeholder="Enter YouTube Embed URL"
                   value={formData.fitMixVideoUrl}
-                  onChange={(e) => setFormData(prev => ({...prev, fitMixVideoUrl: e.target.value}))}
+                  onChange={(e) => setFormData(prev => ({
+                    ...prev, 
+                    fitMixVideoUrl: e.target.value,
+                    imageFile: null,
+                    imagePreview: null // Clear image when video URL is typed
+                  }))}
                 />
               </div>
 
