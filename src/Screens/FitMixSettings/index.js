@@ -24,7 +24,7 @@ export const FitMixSettings = () => {
       setFormData({
         fitMixVideoUrl: settingsData.data.fitMixVideoUrl || "",
         fitMixMessageHTML: settingsData.data.fitMixMessageHTML || "",
-        imagePreview: settingsData.data.fitMixImage ? `${process.env.REACT_APP_IMAGE_URL}${settingsData.data.fitMixImage}` : null,
+        imagePreview: settingsData.data.fitMixImage ? `${process.env.REACT_APP_IMAGE_ENDPOINT}uploads/settings/${settingsData.data.fitMixImage}` : null,
         imageFile: null
       });
     }
